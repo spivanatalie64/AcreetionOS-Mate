@@ -1,285 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AcreetionOS Lite - Progress Notes</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AcreetionOS Lite | Mate Desktop | Arch-Based Linux 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* AcreetionOS Branding Colors */
-            --primary-red: #CC0000;
-            --deep-navy: #002147;
-            --arch-blue: #202933;
-            --bg-light: #F8F9FA;
-            --text-dark: #212529;
-            --border-grey: #DEE2E6;
-            --code-bg: #f4f4f4;
-            --sidebar-text: #ffffff;
+            /* VAMPIRE THEME: RED, GREY, BLACK */
+            --acreetion-red: #cc0000;          /* Deep Blood Red */
+            --acreetion-red-glow: #ff3333;     /* Bright Red for hovers */
+            --acreetion-body-bg: #0a0a0a;      /* True Black */
+            --acreetion-panel-bg: #161616;     /* Dark Grey Panel */
+            --acreetion-box-bg: #1e1e1e;       /* Medium Grey Box */
+            --acreetion-box-border: #2a2a2a;   /* Border Grey */
+            --acreetion-text-bright: #ffffff;  /* Pure White */
+            --acreetion-text: #a0a0a0;         /* Muted Grey Text */
+            --acreetion-code-bg: rgba(204, 0, 0, 0.1);
+            --storm-color: #444444;            /* Storm Grey */
+            --flasher-color: #990000;          /* Darker Red */
+            --font-sans: 'Roboto', sans-serif;
+            --font-mono: 'Fira Code', monospace;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); background-color: var(--acreetion-body-bg); color: var(--acreetion-text-bright); line-height: 1.6; overflow-x: hidden; }
 
-        /* Sidebar Styles */
-        aside {
-            width: 300px;
-            background-color: var(--deep-navy);
-            color: var(--sidebar-text);
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            box-sizing: border-box;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-            z-index: 10;
-        }
+        /* Announcement Bar */
+        .announcement-bar { background-color: #000; border-bottom: 1px solid var(--acreetion-red); padding: 0.5rem 0; font-size: 0.9rem; text-align: center; }
+        .announcement-bar a { color: var(--acreetion-red); font-weight: bold; text-decoration: none; }
 
-        .sidebar-header {
-            background-color: var(--primary-red);
-            padding: 30px 20px;
-            text-align: center;
-        }
+        /* Header */
+        .page-header { background-color: var(--acreetion-panel-bg); border-bottom: 3px solid var(--acreetion-red); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; }
+        .logo { display: flex; align-items: center; gap: 1rem; font-family: var(--font-mono); font-size: 1.8rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo-text span { color: var(--acreetion-red); }
+        .main-nav a { color: var(--acreetion-text); text-decoration: none; margin-left: 2rem; font-weight: 500; transition: 0.3s; }
+        .main-nav a:hover { color: var(--acreetion-red); }
 
-        aside h2 {
-            font-size: 1.5rem;
-            margin: 0;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
+        /* Search */
+        .search-strip { background-color: #111; border-bottom: 1px solid var(--acreetion-box-border); padding: 1.5rem 0; }
+        .search-form { display: flex; max-width: 1400px; margin: 0 auto; border: 1px solid var(--acreetion-box-border); background: #000; }
+        .search-input { flex-grow: 1; background: transparent; border: none; padding: 1rem; color: #fff; outline: none; }
+        .search-btn { background: var(--acreetion-red); border: none; color: #fff; padding: 0 2rem; cursor: pointer; font-weight: bold; }
 
-        .nav-container {
-            padding: 20px;
-            flex-grow: 1;
-        }
+        /* Layout */
+        .page-wrapper { display: grid; grid-template-columns: 1fr 350px; gap: 2rem; max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        .content-box { background-color: var(--acreetion-box-bg); border: 1px solid var(--acreetion-box-border); margin-bottom: 2rem; }
+        .box-header { padding: 1rem; background-color: #111; border-bottom: 1px solid var(--acreetion-red); }
+        .box-header h2 { color: var(--acreetion-red); font-family: var(--font-mono); }
+        .box-body { padding: 2rem; }
 
-        .nav-item {
-            padding: 15px 20px;
-            margin: 8px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            border: 1px solid transparent;
-            color: rgba(255,255,255,0.8);
-        }
+        /* Text and Links */
+        p { color: var(--acreetion-text); margin-bottom: 1rem; }
+        strong { color: var(--acreetion-text-bright); }
+        h3 { color: var(--acreetion-red); margin: 1.5rem 0 1rem; font-family: var(--font-mono); }
+        a { color: var(--acreetion-red); text-decoration: none; }
+        a:hover { color: var(--acreetion-red-glow); text-decoration: underline; }
 
-        .nav-item:hover {
-            background-color: rgba(255,255,255,0.1);
+        /* Buttons */
+        .btn { display: inline-block; padding: 0.8rem 1.5rem; font-weight: bold; text-transform: uppercase; border: none; cursor: pointer; text-decoration: none; transition: 0.3s; margin: 5px; border-radius: 2px; }
+        .btn-red { background: var(--acreetion-red); color: #fff; }
+        .btn-red:hover { background: var(--acreetion-red-glow); transform: translateY(-2px); }
+        .btn-grey { background: var(--storm-color); color: #fff; }
+
+        /* Sidebar Nav */
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav a { display: block; padding: 0.8rem; border-bottom: 1px solid var(--acreetion-box-border); color: var(--acreetion-text); }
+        .sidebar-nav a:hover { background: #252525; color: var(--acreetion-red); }
+
+        /* Team Section */
+        .team-member { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #222; }
+        .team-member-name { font-weight: bold; color: #fff; }
+
+        /* Why Mate Button & Modal */
+        #manifesto-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--acreetion-red);
             color: white;
-            transform: translateX(5px);
+            padding: 1rem;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(204, 0, 0, 0.5);
+            font-family: var(--font-mono);
+            border-radius: 4px;
         }
-
-        .nav-item.active {
-            background-color: white;
-            color: var(--deep-navy);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* Main Content Styles */
-        main {
-            flex-grow: 1;
+        
+        #manifesto-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1001;
+            padding: 2rem;
             overflow-y: auto;
-            padding: 60px;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        #content {
-            max-width: 1000px;
-            margin: 0 auto;
-            line-height: 1.7;
-            background: white;
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-grey);
-        }
-
-        /* Markdown Rendering Overrides */
-        #content h1 { 
-            color: var(--primary-red); 
-            font-size: 2.5rem;
-            border-bottom: 4px solid var(--deep-navy); 
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-weight: 800;
         }
         
-        #content h2 { 
-            color: var(--deep-navy); 
-            margin-top: 2.5rem; 
-            font-size: 1.8rem;
-            border-left: 6px solid var(--primary-red);
-            padding-left: 15px;
+        .manifesto-content {
+            max-width: 800px;
+            margin: 4rem auto;
+            background: var(--acreetion-panel-bg);
+            border: 2px solid var(--acreetion-red);
+            padding: 3rem;
+            position: relative;
         }
 
-        #content h3 { color: var(--arch-blue); font-size: 1.4rem; margin-top: 1.5rem; }
-        
-        #content a { color: var(--primary-red); text-decoration: none; font-weight: 600; }
-        #content a:hover { text-decoration: underline; }
-        
-        #content code { 
-            background-color: var(--code-bg); 
-            padding: 3px 6px; 
-            border-radius: 4px; 
-            font-family: 'Fira Code', 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            color: #d63384;
-        }
-        
-        #content pre { 
-            background-color: var(--arch-blue); 
-            color: #f8f9fa;
-            padding: 20px; 
-            border-radius: 10px; 
-            overflow-x: auto; 
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        #content pre code { background-color: transparent; color: inherit; padding: 0; }
-
-        #content table { 
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 0;
-            margin: 30px 0; 
-            border: 1px solid var(--border-grey);
-            border-radius: 10px;
-            overflow: hidden;
+        .close-manifesto {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--acreetion-red);
+            cursor: pointer;
         }
 
-        #content th, #content td { 
-            padding: 15px; 
-            text-align: left; 
-            border-bottom: 1px solid var(--border-grey);
-        }
+        .manifesto-content h2 { color: var(--acreetion-red); font-family: var(--font-mono); margin-bottom: 1.5rem; }
+        .manifesto-content p { color: #ccc; font-size: 1.1rem; line-height: 1.8; }
+        .manifesto-content strong { color: var(--acreetion-red); }
 
-        #content th { 
-            background-color: var(--deep-navy); 
-            color: white; 
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
-        #content tr:last-child td { border-bottom: none; }
-        #content tr:nth-child(even) { background-color: #fcfcfc; }
-
-        #content blockquote { 
-            border-left: 5px solid var(--primary-red); 
-            padding: 20px; 
-            background: #fff5f5;
-            color: #444; 
-            font-style: italic;
-            margin: 30px 0;
-            border-radius: 0 10px 10px 0;
-        }
-
-        /* Loading Spinner */
-        .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; }
-        .loader {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid var(--primary-red);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 900px) {
-            body { flex-direction: column; }
-            aside { width: 100%; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-            main { padding: 20px; }
-            #content { padding: 30px; }
-        }
+        footer { text-align: center; padding: 3rem; border-top: 1px solid var(--acreetion-red); color: #555; }
     </style>
 </head>
 <body>
 
-    <aside>
-        <div class="sidebar-header">
-            <h2>AcreetionOS</h2>
-        </div>
-        <div class="nav-container">
-            <div class="nav-item" onclick="loadDoc('CHANGES_LITE.md', this)">Changes (Lite)</div>
-            <div class="nav-item" onclick="loadDoc('cross-comparison.md', this)">Cross-Comparison</div>
-        </div>
-    </aside>
+<div class="announcement-bar">
+    <span>ACREETIONOS LITE IS HERE | <a href="https://discord.acreetionos.org">JOIN THE RESISTANCE</a></span>
+</div>
 
+<header class="page-header">
+    <div class="header-content">
+        <a href="#" class="logo">Acreetion<span>OS</span> Lite</a>
+        <nav class="main-nav">
+            <a href="#about">ABOUT</a>
+            <a href="#downloads">DOWNLOADS</a>
+            <a href="https://mate-notes.acreetionos.org">MATE NOTES</a>
+            <a href="git-tracker.html">GIT</a>
+        </nav>
+    </div>
+</header>
+
+<div class="search-strip">
+    <form class="search-form" action="https://searx.acreetionos.org/search">
+        <input type="text" class="search-input" placeholder="SEARCH THE RESISTANCE NETWORK...">
+        <button type="submit" class="search-btn">GO</button>
+    </form>
+</div>
+
+<div class="page-wrapper">
     <main>
-        <div id="content">
-            <div style="text-align: center; padding-top: 100px;">
-                <h1 style="border: none;">Welcome to the Progress Vault</h1>
-                <p style="font-size: 1.2rem; color: #666;">Select a document from the left to view the latest updates.</p>
-                <div style="width: 100px; height: 5px; background: var(--primary-red); margin: 30px auto;"></div>
+        <article id="about" class="content-box">
+            <div class="box-header"><h2>SYSTEM_MANIFEST: LITE_EDITION</h2></div>
+            <div class="box-body">
+                <p><strong>AcreetionOS Lite</strong> is our answer to the modern desktop's descent into corporate-controlled bloat. By utilizing the <strong>Mate Desktop Environment</strong>, we provide a lightning-fast, highly customizable, and traditional "GNOME 2" style experience for the modern era.</p>
+                <p>The Lite edition employs a <strong>ultra-minimal theme</strong> and a carefully curated selection of lightweight binaries. Every component has been stripped of unnecessary overhead while maintaining 100% of the functionality you expect from a daily driver. It's the full power of Linux, without the weight.</p>
+                <p>Built on the bedrock of Arch Linux, Lite is designed for those who value efficiency, freedom, and the ability to run their OS on anything from a high-end workstation to a legacy machine without sacrificing power.</p>
+                <h3>THE ARCHITECTS</h3>
+                <div class="team-member"><span class="team-member-name">Natalie Spiva</span><span>LITE MAINTAINER</span></div>
+                <div class="team-member"><span class="team-member-name">Darren Clift</span><span>BASE ARCHITECT</span></div>
+                <p style="margin-top:1rem;">Natalie and Darren work in lockstep on the AcreetionOS general base. While Natalie leads the Lite edition, they collaborate across all versions to ensure every user has a tool that is efficient, reliable, and built for purpose.</p>
             </div>
-        </div>
+        </article>
+
+        <article id="downloads" class="content-box">
+            <div class="box-header"><h2>DISTRIBUTION_NODES</h2></div>
+            <div class="box-body">
+                <h3>ACREETIONOS LITE (MATE)</h3>
+                <p>The flagship lightweight experience. Optimized for X11 and future-proofed for XLibre.</p>
+                <a href="#" class="btn btn-red">DOWNLOAD MATE ISO</a>
+                <a href="#" class="btn btn-grey">MD5 CHECKSUM</a>
+                
+                <h3>CINNAMON EDITION</h3>
+                <p>For those who prefer the Mint-style workflow on an Arch base.</p>
+                <a href="#" class="btn btn-red">DOWNLOAD ISO</a>
+                
+                <h3>XLIBRE (XL) EXPERIMENTAL</h3>
+                <p>The bleeding edge. Our custom X11-replacement project.</p>
+                <a href="#" class="btn btn-red">DOWNLOAD XL ISO</a>
+            </div>
+        </article>
     </main>
 
-    <script>
-        async function loadDoc(filename, element) {
-            const contentDiv = document.getElementById('content');
-            
-            // UI Feedback
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            if (element) element.classList.add('active');
-            
-            contentDiv.innerHTML = `
-                <div class="loader-container">
-                    <div class="loader"></div>
-                    <p style="margin-top: 20px; color: #666; font-weight: 600;">Fetching Documentation...</p>
-                </div>`;
+    <aside>
+        <div class="content-box">
+            <div class="box-header"><h2>MINIMUM_SPECS</h2></div>
+            <div class="box-body">
+                <p>CPU: 1GHz Single-Core</p>
+                <p>RAM: 1GB (2GB Rec.)</p>
+                <p>DISK: 10GB Space</p>
+                <p>GPU: X11 Compatible</p>
+                <p>BASE: Arch Linux</p>
+                <p>IDLE RAM: ~512MB</p>
+            </div>
+        </div>
+        <div class="content-box">
+            <div class="box-header"><h2>RESOURCES</h2></div>
+            <div class="box-body">
+                <ul class="sidebar-nav">
+                    <li><a href="https://mate-notes.acreetionos.org">MATE CUSTOMIZATION</a></li>
+                    <li><a href="#">DISCORD SERVER</a></li>
+                    <li><a href="#">WIKI</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+</div>
 
-            try {
-                // Since website-notes is a subdirectory of docs/, files are at ../
-                const response = await fetch('../' + filename);
-                if (!response.ok) throw new Error('File not found');
-                const text = await response.text();
-                
-                // Render Markdown
-                contentDiv.innerHTML = marked.parse(text);
-                
-                // Update URL hash without reload for easy sharing
-                window.location.hash = filename;
-                
-            } catch (error) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 50px;">
-                        <h2 style="color: var(--primary-red); border: none;">Error loading document</h2>
-                        <p>Could not fetch <code>${filename}</code>.</p>
-                        <p style="background: #eee; padding: 15px; border-radius: 8px; font-size: 0.9rem;">
-                            <strong>Note:</strong> Browsers block local file access (CORS). <br>
-                            Please serve this folder via a local web server (e.g., <code>python3 -m http.server</code>).
-                        </p>
-                    </div>`;
-            }
+<button id="manifesto-btn" onclick="toggleManifesto()">WHY THE MOVE TO MATE?</button>
+
+<div id="manifesto-overlay">
+    <div class="manifesto-content">
+        <span class="close-manifesto" onclick="toggleManifesto()">&times;</span>
+        <h2>WHY MATE? THE CORPORATE RESISTANCE</h2>
+        <p>
+            For too long, the Linux desktop has been steered by the whims of <strong>Big Corporate</strong>. GNOME, once the gold standard of freedom, has transitioned into a rigid, tablet-centric interface dictated by Red Hat and IBM interests. We believe the <strong>direction of GNOME is absolute BS</strong>. They treat users like consumers, not creators, stripping away the ability to customize and control the very tools we rely on.
+        </p>
+        <p>
+            <strong>AcreetionOS Lite</strong> chooses MATE because it represents the pinnacle of the classic desktop workflow. It provides that <strong>GNOME-Like experience</strong> we all fell in love with—the dual-panel layout, the simplicity, the speed—without the "corporate-knows-best" attitude.
+        </p>
+        <p>
+            Furthermore, the move to MATE is a strategic maneuver. As we look toward the future with our <strong>XLibre</strong> project, MATE's robust X11 integration makes it significantly <strong>easier to port over</strong>. While others chase the instability and restrictions of corporate-driven Wayland implementations, we are doubling down on what works for the user.
+        </p>
+        <p>
+            We aren't just building an OS; we are preserving your right to choose. Reject the bloat. Reject the corporate mandate. <strong>Embrace the Mate.</strong>
+        </p>
+    </div>
+</div>
+
+<footer>
+    <p>ACREETIONOS © 2026 | BUILT FOR FREEDOM | DEFEND YOUR WORKSPACE</p>
+</footer>
+
+<script>
+    function toggleManifesto() {
+        const overlay = document.getElementById('manifesto-overlay');
+        if (overlay.style.display === 'block') {
+            overlay.style.display = 'none';
+        } else {
+            overlay.style.display = 'block';
         }
+    }
+</script>
 
-        // Handle initial load from hash
-        window.addEventListener('load', () => {
-            const hash = window.location.hash.replace('#', '');
-            if (hash) {
-                const navItems = document.querySelectorAll('.nav-item');
-                let found = false;
-                navItems.forEach(item => {
-                    if (item.textContent.toLowerCase().includes(hash.replace('.md', '').split('_')[0].toLowerCase())) {
-                        item.click();
-                        found = true;
-                    }
-                });
-                if (!found) loadDoc('CHANGES_LITE.md', navItems[0]);
-            }
-        });
-    </script>
 </body>
 </html>
