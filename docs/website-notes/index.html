@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcreetionOS Lite - Progress Notes</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            /* AcreetionOS Branding Colors */
+            --primary-red: #CC0000;
+            --deep-navy: #002147;
+            --arch-blue: #202933;
+            --bg-light: #F8F9FA;
+            --text-dark: #212529;
+            --border-grey: #DEE2E6;
+            --code-bg: #f4f4f4;
+            --sidebar-text: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Sidebar Styles */
+        aside {
+            width: 300px;
+            background-color: var(--deep-navy);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            box-sizing: border-box;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            background-color: var(--primary-red);
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        aside h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-container {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid transparent;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background-color: white;
+            color: var(--deep-navy);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Main Content Styles */
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 60px;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        #content {
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.7;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-grey);
+        }
+
+        /* Markdown Rendering Overrides */
+        #content h1 { 
+            color: var(--primary-red); 
+            font-size: 2.5rem;
+            border-bottom: 4px solid var(--deep-navy); 
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 800;
+        }
+        
+        #content h2 { 
+            color: var(--deep-navy); 
+            margin-top: 2.5rem; 
+            font-size: 1.8rem;
+            border-left: 6px solid var(--primary-red);
+            padding-left: 15px;
+        }
+
+        #content h3 { color: var(--arch-blue); font-size: 1.4rem; margin-top: 1.5rem; }
+        
+        #content a { color: var(--primary-red); text-decoration: none; font-weight: 600; }
+        #content a:hover { text-decoration: underline; }
+        
+        #content code { 
+            background-color: var(--code-bg); 
+            padding: 3px 6px; 
+            border-radius: 4px; 
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #d63384;
+        }
+        
+        #content pre { 
+            background-color: var(--arch-blue); 
+            color: #f8f9fa;
+            padding: 20px; 
+            border-radius: 10px; 
+            overflow-x: auto; 
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        #content pre code { background-color: transparent; color: inherit; padding: 0; }
+
+        #content table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0;
+            margin: 30px 0; 
+            border: 1px solid var(--border-grey);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #content th, #content td { 
+            padding: 15px; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border-grey);
+        }
+
+        #content th { 
+            background-color: var(--deep-navy); 
+            color: white; 
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        #content tr:last-child td { border-bottom: none; }
+        #content tr:nth-child(even) { background-color: #fcfcfc; }
+
+        #content blockquote { 
+            border-left: 5px solid var(--primary-red); 
+            padding: 20px; 
+            background: #fff5f5;
+            color: #444; 
+            font-style: italic;
+            margin: 30px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Loading Spinner */
+        .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; }
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--primary-red);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            aside { width: 100%; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            main { padding: 20px; }
+            #content { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="sidebar-header">
+            <h2>AcreetionOS</h2>
+        </div>
+        <div class="nav-container">
+            <div class="nav-item" onclick="loadDoc('CHANGES_LITE.md', this)">Changes (Lite)</div>
+            <div class="nav-item" onclick="loadDoc('cross-comparison.md', this)">Cross-Comparison</div>
+        </div>
+    </aside>
+
+    <main>
+        <div id="content">
+            <div style="text-align: center; padding-top: 100px;">
+                <h1 style="border: none;">Welcome to the Progress Vault</h1>
+                <p style="font-size: 1.2rem; color: #666;">Select a document from the left to view the latest updates.</p>
+                <div style="width: 100px; height: 5px; background: var(--primary-red); margin: 30px auto;"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function loadDoc(filename, element) {
+            const contentDiv = document.getElementById('content');
+            
+            // UI Feedback
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (element) element.classList.add('active');
+            
+            contentDiv.innerHTML = `
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <p style="margin-top: 20px; color: #666; font-weight: 600;">Fetching Documentation...</p>
+                </div>`;
+
+            try {
+                // Since website-notes is a subdirectory of docs/, files are at ../
+                const response = await fetch('../' + filename);
+                if (!response.ok) throw new Error('File not found');
+                const text = await response.text();
+                
+                // Render Markdown
+                contentDiv.innerHTML = marked.parse(text);
+                
+                // Update URL hash without reload for easy sharing
+                window.location.hash = filename;
+                
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <h2 style="color: var(--primary-red); border: none;">Error loading document</h2>
+                        <p>Could not fetch <code>${filename}</code>.</p>
+                        <p style="background: #eee; padding: 15px; border-radius: 8px; font-size: 0.9rem;">
+                            <strong>Note:</strong> Browsers block local file access (CORS). <br>
+                            Please serve this folder via a local web server (e.g., <code>python3 -m http.server</code>).
+                        </p>
+                    </div>`;
+            }
+        }
+
+        // Handle initial load from hash
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                const navItems = document.querySelectorAll('.nav-item');
+                let found = false;
+                navItems.forEach(item => {
+                    if (item.textContent.toLowerCase().includes(hash.replace('.md', '').split('_')[0].toLowerCase())) {
+                        item.click();
+                        found = true;
+                    }
+                });
+                if (!found) loadDoc('CHANGES_LITE.md', navItems[0]);
+            }
+        });
+    </script>
+</body>
+</html>
