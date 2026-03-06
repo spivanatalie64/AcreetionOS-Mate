@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Advanced Installer
+GenericName=System Installer
+Comment=Install AcreetionOS (Advanced Mode)
+Exec=/usr/bin/calamares.sh
+Icon=calamares
+Terminal=false
+Type=Application
+Categories=System;Installer;
+StartupNotify=true

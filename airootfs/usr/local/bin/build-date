@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# AcreetionOS Lite Build & Serial Info Display
+# Displays the build metadata and the machine's unique serial number.
+
+BUILD_INFO_FILE="/etc/acreetion-build-info"
+SERIAL_FILE="/etc/acreetion-serial"
+
+echo "----------------------------------------"
+echo "        ACREETYONOS LITE INFO          "
+echo "----------------------------------------"
+
+if [ -f "$BUILD_INFO_FILE" ]; then
+    cat "$BUILD_INFO_FILE"
+else
+    echo "Build Date: Unknown (No info found)"
+fi
+
+echo "----------------------------------------"
+
+if [ -f "$SERIAL_FILE" ]; then
+    echo "Machine Serial: $(cat $SERIAL_FILE)"
+else
+    echo "Machine Serial: Generating on first boot..."
+fi
+
+echo "----------------------------------------"

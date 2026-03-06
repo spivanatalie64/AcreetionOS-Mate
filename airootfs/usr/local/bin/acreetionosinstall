@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# AcreetionOS Ultimate CLI Installer (Archinstall Wrapper)
+# Specialized for AcreetionOS MATE/Lite configurations
+
+if [[ "$1" != "--ultimate" ]]; then
+    echo "Usage: acreetionosinstall --ultimate"
+    echo "This is an advanced installation method for experienced users."
+    exit 1
+fi
+
+# 1. Internet Check
+echo "Checking internet connectivity..."
+/usr/bin/acreetion-net-setup.sh || { echo "Installation cancelled due to no internet."; exit 1; }
+
+# 2. Archinstall MATE Configuration Wrapper
+echo "Welcome to the AcreetionOS Ultimate CLI Installer."
+echo "This will launch archinstall with a customized AcreetionOS profile."
+
+# Note: We can pass a JSON configuration to archinstall for full automation,
+# but here we'll launch it with interactive defaults suitable for MATE.
+# We'll pre-set our repository name if possible.
+
+# Define essential AcreetionOS packages to ensure they are installed
+EXTRA_PACKAGES="mate mate-extra brisk-menu arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter zram-generator earlyoom preload pamac-gtk3"
+
+sudo archinstall \
+    --disk_layouts '{"/dev/sda": {"partitions": [{"mountpoint": "/", "size": "100%", "type": "primary", "filesystem": "ext4", "boot": true}]}}' \
+    --additional-packages "$EXTRA_PACKAGES" \
+    --desktop-environment "mate" \
+    --mirror-region "Worldwide" \
+    --network-configuration "NetworkManager" \
+    --silent
+
+# Post-install check
+if [ $? -eq 0 ]; then
+    echo "AcreetionOS Ultimate installation completed successfully!"
+else
+    echo "Installation failed. Please check the logs."
+    exit 1
+fi

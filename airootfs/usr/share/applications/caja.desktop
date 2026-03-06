@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=File Manager
+GenericName=File Manager
+Comment=Alternative to Windows Explorer. Manage your files and folders
+Exec=caja
+Icon=system-file-manager
+Terminal=false
+Type=Application
+Categories=System;FileTools;FileManager;
+StartupNotify=true

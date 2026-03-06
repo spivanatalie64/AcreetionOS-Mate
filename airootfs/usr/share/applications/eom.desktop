@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Image Viewer
+GenericName=Image Viewer
+Comment=Alternative to Windows Photos. View and rotate images
+Exec=eom %U
+Icon=eom
+Terminal=false
+Type=Application
+Categories=Graphics;Viewer;
+StartupNotify=true

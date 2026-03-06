@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Task Manager
+GenericName=System Monitor
+Comment=Alternative to Windows Task Manager. View current processes and monitor system state
+Exec=mate-system-monitor
+Icon=utilities-system-monitor
+Terminal=false
+Type=Application
+Categories=System;Monitor;
+StartupNotify=true

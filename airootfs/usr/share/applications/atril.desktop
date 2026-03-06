@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Document Viewer
+GenericName=Document Viewer
+Comment=Alternative to Adobe Acrobat. View PDF and other documents
+Exec=atril %U
+Icon=atril
+Terminal=false
+Type=Application
+Categories=Office;Viewer;
+StartupNotify=true

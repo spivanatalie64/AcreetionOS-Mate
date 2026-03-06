@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Install AcreetionOS
+StartupWMClass=discord
+Comment=Welcome and Installation
+GenericName=Install AcreetionOS
+Exec=/usr/bin/acreetion-simple-install
+Icon=system-installer
+Type=Application
+Categories=Installer
+Path=/usr/bin
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+Hidden=false
+Name[en_US]=Install AcreetionOS
+Comment[en_US]=Welcome and Installation
+X-GNOME-Autostart-Delay=5
+

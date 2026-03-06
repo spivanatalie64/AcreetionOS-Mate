@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Ask AI (Google Gemini)
+Comment=Get answers and research from Google Gemini AI (Use with caution)
+Exec=/usr/bin/launch-gemini.sh
+Icon=system-search
+Terminal=false
+Type=Application
+Categories=Network;Development;

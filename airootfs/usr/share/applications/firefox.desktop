@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Web Browser
+GenericName=Web Browser
+Comment=Alternative to Google Chrome. Browse the World Wide Web
+Exec=firefox %u
+Icon=firefox
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+StartupNotify=true

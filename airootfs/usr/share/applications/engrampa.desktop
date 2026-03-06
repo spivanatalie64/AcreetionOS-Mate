@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Archive Manager
+GenericName=Archive Manager
+Comment=Alternative to WinRAR/7-Zip. Create and extract compressed files
+Exec=engrampa
+Icon=engrampa
+Terminal=false
+Type=Application
+Categories=Utility;Archiving;
+StartupNotify=true

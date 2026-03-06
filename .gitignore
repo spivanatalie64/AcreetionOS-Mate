@@ -1,0 +1,15 @@
+# Archiso build artifacts
+work/
+out/
+
+# Temporary files
+temp.txt
+test.txt
+mergeresults.txt
+
+# Log files
+*.log
+
+# C objects
+*.o
+mkarchiso

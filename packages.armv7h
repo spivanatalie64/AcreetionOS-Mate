@@ -1,0 +1,197 @@
+################################################################################
+# AcreetionOS Lite Package List v2.5
+# Optimized for 1-Core CPU / 2GB RAM / High-Performance "Lite" Experience
+################################################################################
+
+#===============================================================================
+# 1. CORE SYSTEM
+#===============================================================================
+# [Subcategory: Base System]
+base
+linux-armv7
+linux-armv7-headers
+linux-firmware
+mkinitcpio
+mkinitcpio-archiso
+sudo
+dbus
+polkit
+arch-install-scripts
+
+# [Subcategory: Boot & Firmware]
+grub
+efibootmgr
+os-prober
+plymouth
+
+# [Subcategory: Filesystem Support]
+dosfstools
+e2fsprogs
+exfatprogs
+fatresize
+ntfs-3g
+squashfs-tools
+gptfdisk
+parted
+device-mapper
+lvm2
+mdadm
+cryptsetup
+
+#===============================================================================
+# 2. PERFORMANCE & OPTIMIZATION (Lite Core)
+#===============================================================================
+# [Subcategory: Memory Management]
+zram-generator          # Doubling RAM efficiency via compressed swap
+earlyoom                # Protecting system stability under low RAM pressure
+
+# [Subcategory: Process & Disk Optimization]
+preload                 # Intelligent application pre-caching
+pv                      # Progress monitor for pipe operations
+
+#===============================================================================
+# 3. NETWORKING
+#===============================================================================
+# [Subcategory: Connectivity]
+networkmanager
+network-manager-applet
+nm-connection-editor    # Advanced network configuration
+dhcpcd
+dhclient
+wpa_supplicant
+iwd
+
+# [Subcategory: Bluetooth]
+bluez
+bluez-utils
+blueman                 # User-friendly Bluetooth manager
+
+# [Subcategory: Remote & Sync]
+openssh
+rsync
+
+#===============================================================================
+# 4. GRAPHICS & DISPLAY
+#===============================================================================
+# [Subcategory: X11 Server]
+xorg
+mesa
+mesa-utils
+glu
+
+# [Subcategory: Drivers]
+xf86-video-nouveau
+xf86-input-libinput
+
+# [Subcategory: Display Manager]
+lightdm
+lightdm-gtk-greeter
+
+#===============================================================================
+# 5. AUDIO & MULTIMEDIA
+#===============================================================================
+alsa-utils
+pipewire-pulse
+wireplumber
+pavucontrol
+vlc                     # Universal media player
+sof-firmware
+
+#===============================================================================
+# 6. MATE DESKTOP ENVIRONMENT (Lite Experience)
+#===============================================================================
+# [Subcategory: MATE Core]
+mate
+mate-extra
+marco                   # Optimized window manager (compositing disabled in dconf)
+caja                    # Lightweight file manager
+mate-terminal           # Fast, native terminal
+mate-control-center
+mate-polkit             # Native MATE authentication agent
+mate-tweak              # Performance and layout customization
+
+# [Subcategory: Lite Interface]
+brisk-menu              # Modern searchable menu (Cinnamon-style)
+mate-notification-daemon
+mate-power-manager
+mate-screensaver
+mate-utils
+
+# [Subcategory: System Portals]
+xdg-desktop-portal-gtk  # Lightweight portal implementation
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+accountsservice
+
+#===============================================================================
+# 7. APPLICATIONS & UTILITIES
+#===============================================================================
+# [Subcategory: Web]
+firefox                 # Default secure browser
+
+# [Subcategory: Software Management]
+pamac-gtk3              # User-friendly software center (AUR/ACUR support)
+yay                     # CLI AUR helper (if enabled in repo)
+
+# [Subcategory: Native Utilities]
+pluma                   # Lite text editor
+atril                   # Document viewer
+eom                     # Image viewer
+engrampa                # Archive manager
+mate-calc               # Calculator
+mate-system-monitor     # Task manager
+fastfetch               # System information tool
+
+# [Subcategory: Editing & Tools]
+nano
+nano-syntax-highlighting
+zsh
+cups                    # Printing support
+
+#===============================================================================
+# 8. THEMES, ICONS & FONTS
+#===============================================================================
+# [Subcategory: Appearance]
+arc-gtk-theme           # Default dark theme (Low overhead)
+papirus-icon-theme      # Modern, comprehensive icon set
+adwaita-icon-theme      # Fallback icons
+
+# [Subcategory: Typography]
+gnu-free-fonts
+
+#===============================================================================
+# 9. HARDWARE & COMPATIBILITY
+#===============================================================================
+usbutils
+nvme-cli
+smartmontools
+
+#===============================================================================
+# 10. OPTIONAL / DEVELOPMENT (Commented)
+#===============================================================================
+#base-devel
+#git
+#python-pip
+#rust
+#nodejs
+#samba
+#gedit
+#webapp-manager
+
+#===============================================================================
+# ACREETIONOS LITE MAPPING
+#===============================================================================
+#
+# FEATURE                     | COMPONENT IMPLEMENTATION
+# ----------------------------|-------------------------------------------------
+# 1-Core CPU Optimization     | preload (caching) + Reduced Marco Resources
+# 2GB RAM Management          | zram-generator (Swap) + earlyoom (Killer)
+# Cinnamon "Look & Feel"      | MATE Panel + Brisk Menu + Arc-Dark Theme
+# Software Management         | Pamac-GTK (GUI) + pacman (CLI)
+# System Boot Identity        | Plymouth (Acreetion) + GRUB (Galaxy Theme)
+# File Management             | Caja (Native MATE, configured for speed)
+# Network/BT Logic            | NetworkManager + Blueman + nm-applet
+# Post-Install Automation      | postinstall.sh + dconf override injection
+#
+#===============================================================================

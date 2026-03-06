@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Media Player
+GenericName=Media Player
+Comment=Alternative to Windows Media Player. Play music and videos
+Exec=vlc --started-from-file %U
+Icon=vlc
+Terminal=false
+Type=Application
+Categories=AudioVideo;Player;Recorder;
+StartupNotify=true

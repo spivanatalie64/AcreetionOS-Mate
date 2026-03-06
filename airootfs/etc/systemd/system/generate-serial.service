@@ -1,0 +1,11 @@
+[Unit]
+Description=AcreetionOS Lite Machine Serial Generator
+ConditionPathExists=!/etc/acreetion-serial
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/generate-serial.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

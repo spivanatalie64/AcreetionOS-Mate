@@ -1,0 +1,38 @@
+[org/mate/desktop/interface]
+gtk-theme='Arc-Dark'
+icon-theme='Cosmic'
+cursor-theme='Adwaita'
+font-name='Sans 10'
+document-font-name='Sans 10'
+monospace-font-name='Monospace 10'
+
+[org/mate/desktop/background]
+picture-filename='/usr/share/backgrounds/acreetion.png'
+picture-options='zoom'
+primary-color='#000000000000'
+secondary-color='#000000000000'
+
+[org/mate/panel]
+default-layout='redmond'
+
+[org/mate/desktop/session]
+idle-delay=0
+
+[org/mate/screensaver]
+lock-enabled=false
+
+[org/mate/terminal/profiles/default]
+background-color='#171421'
+foreground-color='#D0CFCC'
+use-theme-colors=false
+font='Monospace 14'
+use-system-font=false
+
+[org/mate/caja/desktop]
+computer-icon-visible=true
+home-icon-visible=true
+trash-icon-visible=true
+volumes-visible=true
+
+[org/mate/marco/general]
+center-new-windows=true

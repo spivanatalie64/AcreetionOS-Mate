@@ -13,7 +13,36 @@ AcreetionOS Linux is a community-driven effort to build a lightweight, versatile
 - Lightweight base system
 - Standardized Package Selection
 - User-friendly installation process
-- x86_64 friendly.
+- x86_64, i686, ARM (aarch64/armv7h), and RISC-V support.
+
+## Multi-Architecture Support
+
+AcreetionOS Lite now supports multiple architectures:
+- **x86_64** (64-bit PC)
+- **i686** (32-bit PC)
+- **aarch64** (ARM64, e.g., Raspberry Pi 4)
+- **armv7h** (ARM32)
+- **riscv64** (RISC-V)
+
+### Building for a Specific Architecture
+
+To build for a specific architecture, pass the architecture as an argument to `build-mate.sh`:
+
+```bash
+# Build for x86_64 (Default)
+./build-mate.sh x86_64
+
+# Build for ARM64
+./build-mate.sh aarch64
+
+# Build for 32-bit x86
+./build-mate.sh i686
+
+# Build for RISC-V
+./build-mate.sh riscv64
+```
+
+Note: Building for non-native architectures requires `qemu-user-static` and `binfmt-support` installed and configured on the build host.
 
 ## Getting Started
 
