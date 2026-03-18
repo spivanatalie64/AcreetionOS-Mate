@@ -128,6 +128,20 @@ fi
 
 alias update='sudo pacman -Syyu'
 alias fupdate='flatpak update'
+alias open='xdg-open'
+alias ports='ss -tulanp'
+alias df='duf'
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+
+# Git aliases (if git is available)
+if command -v git &> /dev/null; then
+    alias g='git'
+    alias gs='git status'
+    alias ga='git add'
+    alias gc='git commit'
+    alias gp='git push'
+    alias gl='git log --oneline --graph --decorate'
+fi
 
 clear
 fastfetch -l /etc/AcreetionOS.txt

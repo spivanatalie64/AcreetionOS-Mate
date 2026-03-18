@@ -56,6 +56,23 @@ alias update='sudo pacman -Syyu'
 alias fupdate='flatpak update'
 alias fastfetch='fastfetch -l /etc/AcreetionOS.txt'
 
+# Useful aliases
+alias open='xdg-open'
+aliasYT='yt-dlp --extract-audio --audio-format mp3'
+alias ports='ss -tulanp'
+alias df='duf'
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+
+# Git aliases (if git is available)
+if command -v git &> /dev/null; then
+    alias g='git'
+    alias gs='git status'
+    alias ga='git add'
+    alias gc='git commit'
+    alias gp='git push'
+    alias gl='git log --oneline --graph --decorate'
+fi
+
 # Load fastfetch on start (interactive shells only)
 if [[ -o interactive ]]; then
     clear

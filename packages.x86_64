@@ -162,6 +162,20 @@ eza                    # Modern ls replacement (colored, icons)
 bat                    # Modern cat replacement with syntax highlighting
 fzf                    # Fuzzy finder for CLI
 btop                   # Modern system monitor (lighter than htop)
+curl                   # HTTP client
+wget                   # Download utility
+git                    # Version control
+tmux                   # Terminal multiplexer
+ripgrep                # Fast grep alternative
+httpie                 # User-friendly HTTP client
+jq                     # JSON processor
+duf                    # Better df output
+tldr                   # Simplified man pages
+
+# [Subcategory: Screenshot & Screen Recording]
+mate-screenshot        # Screenshot utility for MATE
+spectacle              # KDE screenshot tool (fallback)
+
 cups                   # Printing support
 
 #===============================================================================
