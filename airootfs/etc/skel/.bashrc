@@ -76,9 +76,17 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    
+    # Use eza if available (modern ls replacement), fallback to ls
+    if command -v eza &> /dev/null; then
+        alias ls='eza --icons --group-directories-first'
+        alias ll='eza -l --icons --group-directories-first'
+        alias la='eza -a --icons --group-directories-first'
+        alias lt='eza --tree --level=2 --icons'
+        alias lx='eza -l --icons --extended'
+    else
+        alias ls='ls --color=auto'
+    fi
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'

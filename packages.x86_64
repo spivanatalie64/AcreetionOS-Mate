@@ -158,7 +158,11 @@ fastfetch               # System information tool
 nano
 nano-syntax-highlighting
 zsh
-cups                    # Printing support
+eza                    # Modern ls replacement (colored, icons)
+bat                    # Modern cat replacement with syntax highlighting
+fzf                    # Fuzzy finder for CLI
+btop                   # Modern system monitor (lighter than htop)
+cups                   # Printing support
 
 #===============================================================================
 # 8. THEMES, ICONS & FONTS
