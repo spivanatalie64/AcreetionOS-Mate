@@ -173,7 +173,6 @@ duf                    # Better df output
 tldr                   # Simplified man pages
 
 # [Subcategory: Screenshot & Screen Recording]
-mate-screenshot        # Screenshot utility for MATE
 spectacle              # KDE screenshot tool (fallback)
 
 cups                   # Printing support

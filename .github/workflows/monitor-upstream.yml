@@ -1,0 +1,89 @@
+name: Monitor Upstream AcreetionOS
+
+on:
+  schedule:
+    # Check for upstream releases every 12 hours
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Check upstream releases
+        id: check
+        run: |
+          python3 << 'EOF'
+          import json
+          import subprocess
+          import os
+          from datetime import datetime
+          
+          # Get latest upstream release
+          print("Checking upstream AcreetionOS releases...")
+          
+          result = subprocess.run(
+              ["curl", "-s", "https://api.github.com/repos/acreetionos-code/acreetionos/releases/latest"],
+              capture_output=True,
+              text=True
+          )
+          
+          if result.returncode == 0:
+              upstream = json.loads(result.stdout)
+              upstream_version = upstream.get("tag_name", "unknown")
+              upstream_url = upstream.get("html_url", "")
+              upstream_date = upstream.get("published_at", "")
+              
+              print(f"Latest upstream version: {upstream_version}")
+              print(f"Released: {upstream_date}")
+              print(f"URL: {upstream_url}")
+              
+              # Check if we already built this version
+              with open(".github/workflows/build.yml", "r") as f:
+                  content = f.read()
+              
+              # Write outputs
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write(f"upstream_version={upstream_version}\n")
+                  f.write(f"upstream_date={upstream_date}\n")
+                  f.write(f"upstream_url={upstream_url}\n")
+          else:
+              print("Error checking upstream releases")
+              print(result.stderr)
+          EOF
+      
+      - name: Sync upstream packages
+        if: success()
+        run: |
+          echo "Syncing packages from upstream..."
+          
+          # Clone upstream repo temporarily
+          git clone --depth=1 https://github.com/acreetionos-code/acreetionos.git /tmp/upstream-acreetionos
+          
+          # Compare packages (informational only, don't auto-sync to avoid breaking MATE configs)
+          echo "=== Package changes from upstream ==="
+          diff -u packages.x86_64 /tmp/upstream-acreetionos/packages.x86_64 || true
+          
+          # Clean up
+          rm -rf /tmp/upstream-acreetionos
+      
+      - name: Trigger build via repository dispatch
+        if: success()
+        run: |
+          echo "Would trigger build workflow here"
+          echo "In production, this would send a repository_dispatch event"
+          
+          # Uncomment to enable auto-triggering:
+          # curl -X POST https://api.github.com/repos/${{ github.repository }}/dispatches \
+          #   -H "Accept: application/vnd.github.evergreen-preview+json" \
+          #   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          #   -d '{"event_type":"upstream-release","client_payload":{"upstream_version":"${{ steps.check.outputs.upstream_version }}"}}'

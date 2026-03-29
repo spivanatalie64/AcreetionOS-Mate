@@ -1,0 +1,101 @@
+stages:
+  - build
+  - release
+
+variables:
+  ARCH: "x86_64"
+  CI_COMMIT_MESSAGE: "${CI_COMMIT_MESSAGE}"
+  FF_USE_FASTZIP: "true"
+  TRANSFER_METER_FREQUENCY: "5s"
+
+# Define pipeline schedules via GitLab CI
+# - Weekly: 0 0 * * 0 (Sunday at 00:00 UTC)
+# - On release tags: when: manual
+
+build:x86_64:
+  stage: build
+  image: archlinux:latest
+  tags:
+    - docker
+    - linux
+  timeout: 2h
+  
+  before_script:
+    - echo "Setting up Arch Linux build environment..."
+    - pacman -Syu --noconfirm
+    - pacman -S --noconfirm base-devel archiso git submodules bc p7zip
+    - git submodule update --init --recursive
+  
+  script:
+    - echo "Building AcreetionOS MATE for ${ARCH}..."
+    - mkdir -p ../ISO
+    - chmod +x ./build-mate.sh
+    - chmod +x ./generate-build-info.sh
+    
+    # Generate build metadata
+    - |
+      mkdir -p airootfs/etc
+      cat > airootfs/etc/acreetion-build-info <<EOF
+      BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
+      BUILD_COMMIT=${CI_COMMIT_SHA}
+      BUILD_BRANCH=${CI_COMMIT_REF_NAME}
+      BUILD_VERSION=${CI_COMMIT_TAG:-nightly-$(date +%Y%m%d)}
+      BUILD_SYSTEM=GitLab CI
+      BUILD_RUNNER=Docker
+      EOF
+    
+    # Run build
+    - sudo -E ./build-mate.sh ${ARCH}
+    
+    # Generate checksums
+    - cd ../ISO
+    - sha256sum AcreetionOS-MATE-*-${ARCH}.iso > checksums.txt
+    - cat checksums.txt
+  
+  artifacts:
+    name: "AcreetionOS-MATE-${ARCH}-${CI_COMMIT_SHORT_SHA}"
+    paths:
+      - ../ISO/AcreetionOS-MATE-*-${ARCH}.iso
+      - ../ISO/checksums.txt
+    expire_in: 30 days
+  
+  retry:
+    max: 1
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+  
+  only:
+    - tags
+    - schedules
+    - web
+    - merge_requests
+
+# Release job - runs on tags
+release:x86_64:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - docker
+  
+  script:
+    - echo "Creating release for ${CI_COMMIT_TAG}..."
+  
+  release:
+    tag_name: "${CI_COMMIT_TAG}"
+    description: "AcreetionOS MATE Edition - ${CI_COMMIT_TAG}"
+    assets:
+      sources:
+        - url: "${CI_PROJECT_URL}/-/archive/${CI_COMMIT_TAG}/acreetionos-mate-${CI_COMMIT_TAG}.tar.gz"
+  
+  only:
+    - tags
+
+# Scheduled build notification
+scheduled_build:
+  stage: build
+  image: alpine:latest
+  script:
+    - echo "Scheduled build triggered at $(date)"
+  only:
+    - schedules
