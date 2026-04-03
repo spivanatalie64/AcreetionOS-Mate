@@ -57,22 +57,22 @@ To get started with AcreetionOS Linux, you can:
 *     Ventoy MUST use GRUB MODE 2, if you use grub by its self will not boot correctly if at all.*
 ## Contributing
 
-We welcome contributions from the community! Please see our [Contributing Guide]("https://github.com/AcreetionOS/AcreetionOSDocumentationPlan/blob/main/documentation/contributor-guide.md") file for guidelines on how to get involved.
+We welcome contributions from the community! Please see our [Contributing Guide](https://github.com/AcreetionOS/acreetionos-mate/blob/main/docs/AUTOBUILD.md) file for guidelines on how to get involved.
 
 ## Roadmap
 
-Our current goal is to release a stable distribution by the end of 2026. Check out our [project road map](https://github.com/cobra3282000/acreetionos/projects) for more details on upcoming features and milestones.
+Our current goal is to release a stable distribution by the end of 2026. Check out our [project status](./PROJECT_STATUS.txt) and [Phase 8 readiness assessment](./PHASE8-READINESS.md) for more details on upcoming features and milestones.
 
 ## Project Information
 
 - **Project Status:** In active development
-- **License:** GPL-3.0
+- **License:** MIT
 - **Maintainers:** Darren Clift (@cobra3282000), Johnathan Spiva (@sprunglesongithub) or (@Sprungles)
 
 
 ## Contact
 
-For questions, suggestions, or support, please [open an issue](https://github.com/cobra3282000/acreetionos/issues) on our GitHub repository.
+For questions, suggestions, or support, please [open an issue](https://github.com/AcreetionOS/acreetionos-mate/issues) on our GitHub repository.
 
 Thank you for your interest in AcreetionOS Linux!
 

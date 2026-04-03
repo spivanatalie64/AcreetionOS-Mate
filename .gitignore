@@ -13,3 +13,6 @@ mergeresults.txt
 # C objects
 *.o
 mkarchiso
+
+# Generated version file
+.buildversion
