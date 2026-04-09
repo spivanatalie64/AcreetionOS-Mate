@@ -92,25 +92,25 @@ fi
 
 # 9. Validate MATE packages presence
 check "Validating MATE desktop packages..."
-if grep -q "^mate$" "packages.x86_64"; then
+if grep -E -q "^mate([[:space:]]|$)" "packages.x86_64"; then
   pass "MATE core package present"
 else
   fail "MATE core package NOT found in packages.x86_64"
 fi
 
-if grep -q "^marco$" "packages.x86_64"; then
+if grep -E -q "^marco([[:space:]]|$)" "packages.x86_64"; then
   pass "MATE window manager (marco) present"
 else
   warn "MATE window manager (marco) not found"
 fi
 
-if grep -q "^caja$" "packages.x86_64"; then
+if grep -E -q "^caja([[:space:]]|$)" "packages.x86_64"; then
   pass "MATE file manager (caja) present"
 else
   warn "MATE file manager (caja) not found"
 fi
 
-if grep -q "^brisk-menu$" "packages.x86_64"; then
+if grep -E -q "^brisk-menu([[:space:]]|$)" "packages.x86_64"; then
   pass "Modern menu (brisk-menu) present"
 else
   warn "brisk-menu not found (optional)"
@@ -120,7 +120,7 @@ fi
 check "Checking for conflicting Cinnamon packages..."
 CONFLICTS=0
 for pkg in "cinnamon" "muffin" "nemo" "cinnamon-control-center"; do
-  if grep -q "^${pkg}$" "packages.x86_64"; then
+  if grep -E -q "^${pkg}([[:space:]]|$)" "packages.x86_64"; then
     fail "CONFLICT: Found Cinnamon package '$pkg' in MATE build!"
   fi
 done
