@@ -5,19 +5,25 @@
 
 set -e
 
-GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "N/A")
-GIT_COMMIT_FULL=$(git rev-parse HEAD 2>/dev/null || echo "N/A")
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "${CI_COMMIT_SHORT_SHA:-${GITHUB_SHA:0:7:-N/A}}")
+GIT_COMMIT_FULL=$(git rev-parse HEAD 2>/dev/null || echo "${CI_COMMIT_SHA:-${GITHUB_SHA:-N/A}}")
 BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 BUILD_DATE_EPOCH=$(date +%s)
-GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "${CI_COMMIT_REF_NAME:-${GITHUB_REF_NAME:-unknown}}")
 GIT_USER=$(git config user.name 2>/dev/null || echo "Builder")
 ARCH="${ARCH:-x86_64}"
 
 # Build serial (identifies the specific ISO build)
 BUILD_SERIAL=$(cat /dev/urandom | tr -dc 'A-Z0-9' | fold -w 8 | head -n 1)
 
-# Try to get version from git tag or use timestamp
-VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "nightly-$(date +%Y%m%d)")
+# Try to get version from environment, git tag or use timestamp
+VERSION="${BUILD_VERSION:-$(git describe --tags --abbrev=0 2>/dev/null || echo "nightly-$(date +%Y%m%d)")}"
+BUILD_SYSTEM="${BUILD_SYSTEM:-local}"
+if [[ -n "${CI_JOB_ID:-}" ]]; then
+  BUILD_SYSTEM="GitLab CI"
+elif [[ -n "${GITHUB_RUN_ID:-}" ]]; then
+  BUILD_SYSTEM="GitHub Actions"
+fi
 
 BUILD_INFO="# AcreetionOS MATE Edition Build Information
 # Generated: ${BUILD_DATE}
@@ -32,7 +38,7 @@ GIT_BRANCH=${GIT_BRANCH}
 BUILD_DATE=${BUILD_DATE}
 BUILD_DATE_EPOCH=${BUILD_DATE_EPOCH}
 BUILD_USER=${GIT_USER}
-BUILD_SYSTEM=${BUILD_SYSTEM:-local}
+BUILD_SYSTEM=${BUILD_SYSTEM}
 BUILD_HOST=$(hostname 2>/dev/null || echo "unknown")"
 
 mkdir -p airootfs/etc

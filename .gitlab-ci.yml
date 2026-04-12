@@ -7,6 +7,8 @@ variables:
   CI_COMMIT_MESSAGE: "${CI_COMMIT_MESSAGE}"
   FF_USE_FASTZIP: "true"
   TRANSFER_METER_FREQUENCY: "5s"
+  SKIP_TERMS: "1"
+  OUTPUT_DIR: "ISO"
 
 # Define pipeline schedules via GitLab CI
 # - Weekly: 0 0 * * 0 (Sunday at 00:00 UTC)
@@ -23,40 +25,46 @@ build:x86_64:
   before_script:
     - echo "Setting up Arch Linux build environment..."
     - pacman -Syu --noconfirm
-    - pacman -S --noconfirm base-devel archiso git submodules bc p7zip
+    - pacman -S --noconfirm base-devel archiso git submodules bc p7zip sudo
     - git submodule update --init --recursive
+    # Recompile wrapper to ensure compatibility
+    - gcc -O3 mkarchiso.c -o mkarchiso_wrapper
+    - chmod +x mkarchiso_wrapper
   
   script:
     - echo "Building AcreetionOS MATE for ${ARCH}..."
-    - mkdir -p ../ISO
+    - mkdir -p ${OUTPUT_DIR}
     - chmod +x ./build-mate.sh
     - chmod +x ./generate-build-info.sh
+    - chmod +x ./generate-build-version.sh
+    - chmod +x ./validate-build.sh
     
-    # Generate build metadata
+    # 1. Validation & Security Gate
+    - echo "🔒 Running security validation..."
+    - ./validate-build.sh
     - |
-      mkdir -p airootfs/etc
-      cat > airootfs/etc/acreetion-build-info <<EOF
-      BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-      BUILD_COMMIT=${CI_COMMIT_SHA}
-      BUILD_BRANCH=${CI_COMMIT_REF_NAME}
-      BUILD_VERSION=${CI_COMMIT_TAG:-nightly-$(date +%Y%m%d)}
-      BUILD_SYSTEM=GitLab CI
-      BUILD_RUNNER=Docker
-      EOF
+      if grep -q "cinnamon\|nemo\|muffin\|gnome-terminal" packages.x86_64; then
+        echo "❌ SECURITY: Found conflicting packages (Cinnamon/GNOME)"
+        exit 1
+      fi
     
-    # Run build
+    # 2. Generate versioning info
+    - ./generate-build-version.sh
+    
+    # 3. Run build
     - sudo -E ./build-mate.sh ${ARCH}
     
-    # Generate checksums
-    - cd ../ISO
+    # 4. Generate checksums
+    - cd ${OUTPUT_DIR}
     - sha256sum AcreetionOS-MATE-*-${ARCH}.iso > checksums.txt
     - cat checksums.txt
   
   artifacts:
     name: "AcreetionOS-MATE-${ARCH}-${CI_COMMIT_SHORT_SHA}"
     paths:
-      - ../ISO/AcreetionOS-MATE-*-${ARCH}.iso
-      - ../ISO/checksums.txt
+      - ${OUTPUT_DIR}/AcreetionOS-MATE-*-${ARCH}.iso
+      - ${OUTPUT_DIR}/checksums.txt
+      - ${OUTPUT_DIR}/*.sha256
     expire_in: 30 days
   
   retry:
@@ -78,15 +86,25 @@ release:x86_64:
   tags:
     - docker
   
+  needs:
+    - job: build:x86_64
+      artifacts: true
+
   script:
     - echo "Creating release for ${CI_COMMIT_TAG}..."
+    - |
+      ISO_FILE=$(ls ISO/AcreetionOS-MATE-*-${ARCH}.iso | head -n 1)
+      ISO_NAME=$(basename $ISO_FILE)
+      echo "ISO_FILE=$ISO_FILE"
+      echo "ISO_NAME=$ISO_NAME"
   
   release:
     tag_name: "${CI_COMMIT_TAG}"
     description: "AcreetionOS MATE Edition - ${CI_COMMIT_TAG}"
     assets:
-      sources:
-        - url: "${CI_PROJECT_URL}/-/archive/${CI_COMMIT_TAG}/acreetionos-mate-${CI_COMMIT_TAG}.tar.gz"
+      links:
+        - name: "AcreetionOS MATE ISO (${ARCH})"
+          url: "${CI_PROJECT_URL}/-/jobs/${GE_JOB_ID}/artifacts/file/${ISO_FILE}"
   
   only:
     - tags

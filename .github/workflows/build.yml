@@ -20,7 +20,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
     timeout-minutes: 120
+    
+    env:
+      SKIP_TERMS: 1
     
     strategy:
       matrix:
@@ -41,21 +47,27 @@ jobs:
       - name: Set up build environment
         run: |
           # Update system packages
-          sudo apt-get update
-          sudo apt-get install -y \
-            arch-install-scripts \
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm \
+            base-devel \
+            archiso \
             dosfstools \
-            grub-efi-amd64-signed \
-            grub-pc-bin \
+            grub \
+            efibootmgr \
             mtools \
-            parted \
-            libarchive-tools \
+            libarchive \
             bc \
-            p7zip-full
+            p7zip \
+            sudo \
+            git
           
-          # Install Arch Linux bootstrap
-          sudo pacman-key --init
-          sudo pacman-key --populate archlinux
+          # Initialize Arch Linux keys
+          pacman-key --init
+          pacman-key --populate archlinux
+          
+          # Recompile wrapper to ensure compatibility
+          gcc -O3 mkarchiso.c -o mkarchiso_wrapper
+          chmod +x mkarchiso_wrapper
       
       - name: Generate build version and metadata
         env:
@@ -85,18 +97,6 @@ jobs:
             exit 1
           fi
           echo "✅ Security validation passed"
-      
-      - name: Generate build metadata
-        run: |
-          mkdir -p airootfs/etc
-          cat > airootfs/etc/acreetion-build-info <<EOF
-          BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          BUILD_COMMIT=$(git rev-parse HEAD)
-          BUILD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          BUILD_VERSION=${{ steps.version.outputs.version }}
-          BUILD_SYSTEM=GitHub Actions
-          BUILD_RUNNER=${{ runner.os }}
-          EOF
       
       - name: Build ISO
         env:

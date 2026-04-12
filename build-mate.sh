@@ -88,7 +88,7 @@ export PACMAN_OPTS="--overwrite '*'"
 log_info "Starting AcreetionOS MATE Build for ${ARCH}..."
 echo "Build log: ${BUILD_LOG}"
 
-if sudo -E ./mkarchiso_wrapper -L "AcreetionOS-MATE" -v -o "${OUTPUT_DIR}" . -C "./pacman.${ARCH}.conf" -j "$(nproc)" 2>&1 | tee -a "${BUILD_LOG}"; then
+if sudo -E ./mkarchiso_wrapper -L "AcreetionOS-MATE" -v -o "${OUTPUT_DIR}" . -C "./pacman.${ARCH}.conf" 2>&1 | tee -a "${BUILD_LOG}"; then
   log_success "Build process completed"
 else
   log_error "Build process failed - check ${BUILD_LOG} for details"
