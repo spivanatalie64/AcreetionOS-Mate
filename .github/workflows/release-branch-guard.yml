@@ -1,0 +1,43 @@
+name: Release Branch Guard
+
+on:
+  push:
+    branches:
+      - 'release-*'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  validate-release-tag:
+    runs-on: ubuntu-latest
+    name: Validate release tag on branch push
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify annotated release tag
+        run: |
+          set -euo pipefail
+          TAG_PATTERN='^v[0-9]+\.[0-9]+(\.[0-9]+)?-mate\.[0-9]+$'
+
+          mapfile -t TAGS < <(git tag --points-at HEAD)
+
+          if [ "${#TAGS[@]}" -eq 0 ]; then
+            echo "ERROR: release branches require an annotated release tag on HEAD."
+            exit 1
+          fi
+
+          for tag in "${TAGS[@]}"; do
+            if [[ "$tag" =~ $TAG_PATTERN ]] && [ "$(git cat-file -t "$tag")" = "tag" ]; then
+              echo "Found valid release tag: $tag"
+              exit 0
+            fi
+          done
+
+          echo "ERROR: no annotated tag matching ${TAG_PATTERN} points at HEAD."
+          printf 'Tags on HEAD: %s\n' "${TAGS[*]}"
+          exit 1

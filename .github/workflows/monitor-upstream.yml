@@ -6,6 +6,9 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-upstream:
     runs-on: ubuntu-latest
@@ -24,50 +27,72 @@ jobs:
         run: |
           python3 << 'EOF'
           import json
-          import subprocess
           import os
-          from datetime import datetime
-          
-          # Get latest upstream release
+          import urllib.request
+
+          API_URL = "https://api.github.com/repos/acreetionos-code/acreetionos/releases?per_page=100"
+
+          def api_get(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "User-Agent": "AcreetionOS-Upstream-Monitor",
+                  },
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.load(response)
+
           print("Checking upstream AcreetionOS releases...")
-          
-          result = subprocess.run(
-              ["curl", "-s", "https://api.github.com/repos/acreetionos-code/acreetionos/releases/latest"],
-              capture_output=True,
-              text=True
-          )
-          
-          if result.returncode == 0:
-              upstream = json.loads(result.stdout)
+
+          try:
+              releases = api_get(API_URL)
+          except Exception as exc:
+              print(f"Error checking upstream releases: {exc}")
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("should_sync=false\n")
+              raise SystemExit(1)
+
+          upstream = None
+          for release in releases:
+              target = release.get("target_commitish", "")
+              if target.startswith("release-") and not release.get("draft", False):
+                  lowered = target.lower()
+                  if any(token in lowered for token in ("dev", "devel", "alpha", "beta", "rc")):
+                      continue
+                  upstream = release
+                  break
+
+          if upstream is None:
+              print("No release-* branch release found; skipping sync.")
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("should_sync=false\n")
+          else:
               upstream_version = upstream.get("tag_name", "unknown")
               upstream_url = upstream.get("html_url", "")
               upstream_date = upstream.get("published_at", "")
-              
-              print(f"Latest upstream version: {upstream_version}")
+              upstream_branch = upstream.get("target_commitish", "")
+
+              print(f"Latest matching release: {upstream_version}")
+              print(f"Branch: {upstream_branch}")
               print(f"Released: {upstream_date}")
               print(f"URL: {upstream_url}")
-              
-              # Check if we already built this version
-              with open(".github/workflows/build.yml", "r") as f:
-                  content = f.read()
-              
-              # Write outputs
+
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("should_sync=true\n")
                   f.write(f"upstream_version={upstream_version}\n")
+                  f.write(f"upstream_branch={upstream_branch}\n")
                   f.write(f"upstream_date={upstream_date}\n")
                   f.write(f"upstream_url={upstream_url}\n")
-          else:
-              print("Error checking upstream releases")
-              print(result.stderr)
           EOF
-      
+
       - name: Sync upstream packages
-        if: success()
+        if: success() && steps.check.outputs.should_sync == 'true'
         run: |
           echo "Syncing packages from upstream..."
           
           # Clone upstream repo temporarily
-          git clone --depth=1 https://github.com/acreetionos-code/acreetionos.git /tmp/upstream-acreetionos
+          git clone --depth=1 --branch "${{ steps.check.outputs.upstream_branch }}" https://github.com/acreetionos-code/acreetionos.git /tmp/upstream-acreetionos
           
           # Compare packages (informational only, don't auto-sync to avoid breaking MATE configs)
           echo "=== Package changes from upstream ==="
@@ -77,7 +102,7 @@ jobs:
           rm -rf /tmp/upstream-acreetionos
       
       - name: Install glab
-        if: success()
+        if: success() && steps.check.outputs.should_sync == 'true'
         env:
           GLAB_VERSION: "1.49.0"
         run: |
@@ -89,20 +114,22 @@ jobs:
             *) echo "Unsupported architecture: $ARCH" >&2 ; exit 1 ;;
           esac
           mkdir -p "$HOME/.local/bin"
-          curl -sL "https://gitlab.com/gitlab-org/cli/-/releases/v${GLAB_VERSION}/downloads/glab_${GLAB_VERSION}_linux_${GLAB_ARCH}.tar.gz" \
+          curl -fsSL "https://gitlab.com/gitlab-org/cli/-/releases/v${GLAB_VERSION}/downloads/glab_${GLAB_VERSION}_linux_${GLAB_ARCH}.tar.gz" \
             | tar xz -C "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.local/bin:$PATH"
           glab version
 
       - name: Trigger GitLab ISO build on upstream release
-        if: success()
+        if: success() && steps.check.outputs.should_sync == 'true'
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_HOST: gitlab.acreetionos.org
           UPSTREAM_VERSION: ${{ steps.check.outputs.upstream_version }}
+          UPSTREAM_BRANCH: ${{ steps.check.outputs.upstream_branch }}
         run: |
           glab ci run \
             --hostname gitlab.acreetionos.org \
             --repo "${{ secrets.GITLAB_PROJECT }}" \
-            --branch main \
+            --branch "${UPSTREAM_BRANCH}" \
             --variables "TRIGGERED_BY=upstream-monitor,UPSTREAM_VERSION=${UPSTREAM_VERSION}"
