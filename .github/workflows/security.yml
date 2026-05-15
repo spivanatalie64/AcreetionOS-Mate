@@ -124,8 +124,10 @@ jobs:
             rm -rf "$TMPDIR"
           fi
           export PATH="$HOME/.local/bin:$PATH"
-          echo "Running grype against packages.x86_64"
-          grype packages.x86_64 --fail-on high
+          echo "Updating grype database"
+          grype db update
+          echo "Running grype against the directory"
+          grype dir:. --fail-on high
       
       - name: Check package licenses
         run: |

@@ -129,7 +129,6 @@ jobs:
           UPSTREAM_BRANCH: ${{ steps.check.outputs.upstream_branch }}
         run: |
           glab ci run \
-            --hostname gitlab.acreetionos.org \
             --repo "${{ secrets.GITLAB_PROJECT }}" \
             --branch "${UPSTREAM_BRANCH}" \
             --variables "TRIGGERED_BY=upstream-monitor,UPSTREAM_VERSION=${UPSTREAM_VERSION}"
