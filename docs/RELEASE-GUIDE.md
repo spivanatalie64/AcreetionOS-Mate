@@ -41,6 +41,10 @@ git push origin "${VERSION}"
 - Creates GitHub Release with ISO attachment
 - Generates checksums automatically
 
+**Release branch protection**
+- Direct pushes to `release-*` branches must have an annotated tag on `HEAD` matching `vX.Y-mate.N` or `vX.Y.Z-mate.N`.
+- Require the `Release Branch Guard` workflow as a protected branch status check to block untagged pushes.
+
 **Step 4: GitLab CI Triggers** (if using GitLab)
 - GitLab CI automatically detects the tag
 - Build and release stages run automatically

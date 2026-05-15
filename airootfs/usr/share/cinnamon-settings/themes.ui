@@ -5,8 +5,10 @@
   <object class="GtkBox" id="page_simplified">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="margin-start">20</property>
-    <property name="margin-end">20</property>
+    <property name="margin-start">24</property>
+    <property name="margin-end">24</property>
+    <property name="margin-top">24</property>
+    <property name="margin-bottom">24</property>
     <property name="orientation">vertical</property>
     <child>
       <!-- n-columns=2 n-rows=5 -->
@@ -15,15 +17,16 @@
         <property name="can-focus">False</property>
         <property name="halign">center</property>
         <property name="valign">start</property>
-        <property name="margin-top">45</property>
-        <property name="row-spacing">16</property>
-        <property name="column-spacing">16</property>
+        <property name="margin-top">40</property>
+        <property name="row-spacing">20</property>
+        <property name="column-spacing">20</property>
         <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Appearance</property>
+            <property name="margin-bottom">4</property>
             <attributes>
               <attribute name="scale" value="1.2"/>
             </attributes>
@@ -40,6 +43,7 @@
             <property name="no-show-all">True</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Color</property>
+            <property name="margin-bottom">4</property>
             <attributes>
               <attribute name="scale" value="1.2"/>
             </attributes>
@@ -68,17 +72,21 @@
             <property name="hexpand">False</property>
             <property name="homogeneous">True</property>
             <property name="layout-style">expand</property>
+            <property name="spacing">12</property>
             <child>
               <object class="GtkToggleButton" id="mixed_button">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="width-request">160</property>
+                <property name="height-request">176</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="border-width">0</property>
+                    <property name="spacing">8</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkImage" id="image_mixed">
@@ -96,7 +104,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="margin-bottom">3</property>
+                        <property name="margin-bottom">4</property>
                         <property name="label" translatable="yes">Mixed</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
@@ -123,10 +131,13 @@
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="width-request">160</property>
+                <property name="height-request">176</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="spacing">8</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkImage" id="image_dark">
@@ -144,7 +155,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="margin-bottom">3</property>
+                        <property name="margin-bottom">4</property>
                         <property name="label" translatable="yes">Dark</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
@@ -171,10 +182,13 @@
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="width-request">160</property>
+                <property name="height-request">176</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="spacing">8</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkImage" id="image_light">
@@ -192,7 +206,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="margin-bottom">3</property>
+                        <property name="margin-bottom">4</property>
                         <property name="label" translatable="yes">Light</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
@@ -221,10 +235,10 @@
         </child>
         <child>
           <object class="GtkButtonBox" id="color_box">
-            <property name="height-request">30</property>
+            <property name="height-request">36</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="hexpand">False</property>
+            <property name="hexpand">True</property>
             <property name="homogeneous">True</property>
             <property name="layout-style">expand</property>
             <child>
@@ -243,6 +257,7 @@
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="halign">end</property>
+            <property name="margin-top">8</property>
           </object>
           <packing>
             <property name="left-attach">1</property>
@@ -255,6 +270,7 @@
             <property name="can-focus">False</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Style</property>
+            <property name="margin-bottom">4</property>
             <attributes>
               <attribute name="scale" value="1.2"/>
             </attributes>
@@ -268,6 +284,7 @@
           <object class="GtkComboBoxText" id="style_combo">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="hexpand">True</property>
           </object>
           <packing>
             <property name="left-attach">1</property>

@@ -176,6 +176,9 @@ glib2-docs, gtk-doc              # Documentation (not needed)
 
 ### Monthly Sync Process (Step-by-Step)
 
+Automated tracking only runs when the upstream release was created from an official `release-*` branch.
+Branches that look like development lines (for example `release-*-dev` or `release-*-devel`) are ignored by the monitor workflow.
+
 **Phase 1: Preparation (10 minutes)**
 ```bash
 # Create tracking branch
